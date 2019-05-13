@@ -1,0 +1,6 @@
+Neos:
+  Flow:
+    resource:
+      targets:
+        localWebDirectoryPersistentResourcesTarget:
+          target: 'Shel\AssetNames\ResourceManagement\Target\FileSystemSymlinkTarget'

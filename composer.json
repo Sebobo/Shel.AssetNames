@@ -1,0 +1,33 @@
+{
+    "description": "Allows changing uploaded asset filenames in Neos CMS",
+    "type": "neos-plugin",
+    "name": "shel/asset-names",
+    "license": "GPL-3.0-or-later",
+    "keywords": [
+        "Neos CMS",
+        "Assets",
+        "SEO"
+    ],
+    "authors": [
+        {
+            "name": "Sebastian Helzle",
+            "email": "support@helzle.it",
+            "homepage": "https://helzle.it",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "neos/neos": "^4.0",
+        "cocur/slugify": "^2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Shel\\AssetNames\\": "Classes/"
+        }
+    },
+    "extra": {
+        "neos": {
+            "package-key": "Shel.AssetNames"
+        }
+    }
+}

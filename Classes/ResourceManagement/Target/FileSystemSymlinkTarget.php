@@ -1,8 +1,15 @@
 <?php
 namespace Shel\AssetNames\ResourceManagement\Target;
 
+/*
+ * This file is part of the Shel.AssetNames package.
+ *
+ * This package is Open Source Software. For the full copyright and license
+ * information, please view the LICENSE file which was distributed with this
+ * source code.
+ */
+
 use Neos\Flow\Annotations as Flow;
-use Cocur\Slugify\Slugify;
 use Neos\Flow\ResourceManagement\ResourceMetaDataInterface;
 use Neos\Media\Domain\Repository\AssetRepository;
 
@@ -11,6 +18,8 @@ use Neos\Media\Domain\Repository\AssetRepository;
  */
 class FileSystemSymlinkTarget extends \Neos\Flow\ResourceManagement\Target\FileSystemSymlinkTarget
 {
+    use AssetNameTrait;
+
     /**
      * @Flow\Inject
      * @var AssetRepository
@@ -22,16 +31,7 @@ class FileSystemSymlinkTarget extends \Neos\Flow\ResourceManagement\Target\FileS
      */
     protected function getRelativePublicationPathAndFilename(ResourceMetaDataInterface $object)
     {
-        $filename = $object->getFilename();
-
-        $asset = $this->assetRepository->findOneByResourceSha1($object->getSha1());
-
-        if ($asset) {
-            $slugify = new Slugify();
-            if (!empty($asset->getTitle())) {
-                $filename = $slugify->slugify($asset->getTitle()) . '.' . $asset->getFileExtension();
-            }
-        }
+        $filename = $this->getTitleBasedFilename($object);
 
         if ($object->getRelativePublicationPath() !== '') {
             $pathAndFilename = $object->getRelativePublicationPath() . $filename;

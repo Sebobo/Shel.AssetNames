@@ -35,6 +35,22 @@ the change as PR to this package.
 * This feature should be in the Neos CMS core at some point. 
 * This package is meant to find the best implementation and also support older Neos versions until it's part of the core.
 
-## Contribute
+## Contributions
 
-Contributions are very welcome. 
+Contributions are very welcome! 
+
+Please create detailed issues and PRs.  
+
+**If you use this package and want to support or speed up it's development, [get in touch with me](mailto:assetnames@helzle.it).**
+
+Or you can also support me directly via [patreon](https://www.patreon.com/shelzle).                                  
+
+## License
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.

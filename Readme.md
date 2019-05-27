@@ -1,4 +1,8 @@
-# Asset names for Neos CMS
+# Asset names for Neos CMS     
+
+[![Latest Stable Version](https://poser.pugx.org/shel/asset-names/v/stable)](https://packagist.org/packages/shel/asset-names)
+[![Total Downloads](https://poser.pugx.org/shel/asset-names/downloads)](https://packagist.org/packages/shel/asset-names)
+[![License](https://poser.pugx.org/shel/asset-names/license)](https://packagist.org/packages/shel/asset-names)
 
 Installing this package will change the naming behavior for files when publishing assets in Neos CMS.
 By default Neos CMS will create a symlink in the public `Web` folder to the file stored in the private `Data/Persistent`

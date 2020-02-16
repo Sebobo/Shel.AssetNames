@@ -4,3 +4,8 @@ Neos:
       targets:
         localWebDirectoryPersistentResourcesTarget:
           target: 'Shel\AssetNames\ResourceManagement\Target\FileSystemSymlinkTarget'
+
+Shel:
+  AssetNames:
+    enabled: true
+    expression: "${asset.title + '-' + width + 'x' + height}"

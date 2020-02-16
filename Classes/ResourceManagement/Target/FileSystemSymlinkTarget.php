@@ -9,9 +9,7 @@ namespace Shel\AssetNames\ResourceManagement\Target;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
 use Neos\Flow\ResourceManagement\ResourceMetaDataInterface;
-use Neos\Media\Domain\Repository\AssetRepository;
 
 /**
  * A target which publishes resources by creating symlinks with the filename based on the files title.
@@ -19,12 +17,6 @@ use Neos\Media\Domain\Repository\AssetRepository;
 class FileSystemSymlinkTarget extends \Neos\Flow\ResourceManagement\Target\FileSystemSymlinkTarget
 {
     use AssetNameTrait;
-
-    /**
-     * @Flow\Inject
-     * @var AssetRepository
-     */
-    protected $assetRepository;
 
     /**
      * @inheritDoc

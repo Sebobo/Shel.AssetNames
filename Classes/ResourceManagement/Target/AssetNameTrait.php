@@ -9,7 +9,11 @@ namespace Shel\AssetNames\ResourceManagement\Target;
  * source code.
  */
 
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Exception;
 use Neos\Flow\ResourceManagement\ResourceMetaDataInterface;
+use Neos\Media\Domain\Model\AssetInterface;
+use Neos\Media\Domain\Model\Thumbnail;
 use Cocur\Slugify\Slugify;
 
 /**
@@ -22,6 +26,41 @@ trait AssetNameTrait
 {
 
     /**
+     * @Flow\InjectConfiguration(package="Shel.AssetNames", path="expression")
+     * @var string
+     */
+    protected $assetNameExpression;
+
+    /**
+     * @Flow\InjectConfiguration(package="Shel.AssetNames", path="enabled")
+     * @var bool
+     */
+    protected $enabled;
+
+    /**
+     * @Flow\Inject
+     * @var \Neos\Media\Domain\Repository\AssetRepository
+     */
+    protected $assetRepository;
+
+    /**
+     * @Flow\Inject
+     * @var \Neos\Media\Domain\Repository\ThumbnailRepository
+     */
+    protected $thumbnailRepository;
+
+    /**
+     * @Flow\Inject(lazy=false)
+     * @var \Neos\Eel\CompilingEvaluator
+     */
+    protected $eelEvaluator;
+
+    /**
+     * @var Slugify
+     */
+    protected $slugify;
+
+    /**
      * Returns a filename based on the objects title if set, and the original filename if not.
      *
      * @param ResourceMetaDataInterface $object
@@ -30,12 +69,51 @@ trait AssetNameTrait
     protected function getTitleBasedFilename(ResourceMetaDataInterface $object): string
     {
         $filename = $object->getFilename();
+
+        if (!$this->enabled) {
+            return $filename;
+        }
+
+        /** @var AssetInterface $asset */
         $asset = $this->assetRepository->findOneByResourceSha1($object->getSha1());
+        $width = 0;
+        $height = 0;
+
+        if ($asset === null) {
+            $query = $this->thumbnailRepository->createQuery();
+            $query->matching($query->equals('resource.sha1', $object->getSha1()))->setLimit(1);
+            /** @var Thumbnail $thumbnail */
+            $thumbnail = $query->execute()->getFirst();
+
+            if ($thumbnail !== null) {
+                $asset = $thumbnail->getOriginalAsset();
+                $width = $thumbnail->getWidth();
+                $height = $thumbnail->getHeight();
+            }
+        }
 
         if ($asset !== null) {
-            $slugify = new Slugify();
             if (!empty($asset->getTitle())) {
-                $filename = $slugify->slugify($asset->getTitle()) . '.' . $asset->getFileExtension();
+                try {
+                    $filename = \Neos\Eel\Utility::evaluateEelExpression(
+                        $this->assetNameExpression,
+                        $this->eelEvaluator,
+                        [
+                            'asset' => $asset,
+                            'width' => $width ? $width : $asset->getWidth(),
+                            'height' => $height ? $height : $asset->getHeight(),
+                        ],
+                        []
+                    );
+                } catch (Exception $e) {
+                    $filename = $asset->getTitle();
+                } finally {
+                    if (!$this->slugify) {
+                        $this->slugify = new Slugify();
+                    }
+
+                    $filename = $this->slugify->slugify($filename) . '.' . $asset->getFileExtension();
+                }
             }
         }
 

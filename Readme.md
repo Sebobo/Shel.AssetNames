@@ -18,14 +18,29 @@ New behavior: The symlinks to these assets will have a filename based on their `
 
 ## Caveats
 
+* The final filename will be run through `slugify` to prevent problematic characters in the filename.
 * The actual file name stored in the database is not changed. Therefore there is an additional query to the database
 to generate the file name when the public uri is requested. This might be optimized in the future.
+
+In my tests publishing ~1000 resources with this plugin took ~2.5s compared to ~1s without this feature.
 
 ## How to use it
 
 1. Install the package via composer `composer require --no-update shel/asset-names` in your site package.
 2. Run `composer update` in your project's root folder.
-2. Run `./flow resource:publish`
+3. Run `./flow resource:publish`.
+4. Change an assets title in the media module and check the resulting filename in the preview.
+
+### Adapt the filename schema
+
+You can customise the filename creation via your `Settings.yaml`.
+Add the following snippet to your configuration and adapt it to your needs:
+
+    Shel:
+      AssetNames:
+        expression: "${'my-prefix-' + asset.title + '-' + width + 'x' + height}"
+        
+It's recommended to keep the `width` and `height` suffix.
 
 ## What the package cannot do yet
 
@@ -45,9 +60,9 @@ Contributions are very welcome!
 
 Please create detailed issues and PRs.  
 
-**If you use this package and want to support or speed up it's development, [get in touch with me](mailto:assetnames@helzle.it).**
-
-Or you can also support me directly via [patreon](https://www.patreon.com/shelzle).                                  
+If you use this package and want to support or speed up it's development, use Githubs sponsor button 
+or [get in touch with me](mailto:assetnames@helzle.it)
+                                  
 
 ## License
 

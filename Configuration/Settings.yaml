@@ -8,4 +8,4 @@ Neos:
 Shel:
   AssetNames:
     enabled: true
-    expression: "${asset.title + '-' + width + 'x' + height}"
+    expression: "${asset.title + (width && height ? '-' + width + 'x' + height : '')}"

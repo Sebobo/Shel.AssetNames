@@ -13,6 +13,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Exception;
 use Neos\Flow\ResourceManagement\ResourceMetaDataInterface;
 use Neos\Media\Domain\Model\AssetInterface;
+use Neos\Media\Domain\Model\ImageInterface;
 use Neos\Media\Domain\Model\Thumbnail;
 use Cocur\Slugify\Slugify;
 
@@ -95,13 +96,18 @@ trait AssetNameTrait
         if ($asset !== null) {
             if (!empty($asset->getTitle())) {
                 try {
+                    if ($asset instanceof ImageInterface && (!$width || !$height)) {
+                        $width = $asset->getWidth();
+                        $height = $asset->getHeight();
+                    }
+
                     $filename = \Neos\Eel\Utility::evaluateEelExpression(
                         $this->assetNameExpression,
                         $this->eelEvaluator,
                         [
                             'asset' => $asset,
-                            'width' => $width ? $width : $asset->getWidth(),
-                            'height' => $height ? $height : $asset->getHeight(),
+                            'width' => $width,
+                            'height' => $height,
                         ],
                         []
                     );

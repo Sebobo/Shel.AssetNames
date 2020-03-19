@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 namespace Shel\AssetNames\ResourceManagement\Target;
 
 /*
@@ -21,7 +23,7 @@ class FileSystemSymlinkTarget extends \Neos\Flow\ResourceManagement\Target\FileS
     /**
      * @inheritDoc
      */
-    protected function getRelativePublicationPathAndFilename(ResourceMetaDataInterface $object)
+    protected function getRelativePublicationPathAndFilename(ResourceMetaDataInterface $object) : string
     {
         $filename = $this->getTitleBasedFilename($object);
 

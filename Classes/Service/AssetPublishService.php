@@ -54,7 +54,11 @@ class AssetPublishService
 
         /** @var VariantSupportInterface $originalAsset */
         $originalAsset = ($asset instanceof AssetVariantInterface ? $asset->getOriginalAsset() : $asset);
-        $variants = $originalAsset->getVariants();
+
+        $variants = [];
+        if ($originalAsset instanceof AssetVariantInterface) {
+            $variants = $originalAsset->getVariants();
+        }
 
         /** @var QueryResult $thumbnails */
         $thumbnails = $this->thumbnailRepository->findByOriginalAsset($originalAsset);

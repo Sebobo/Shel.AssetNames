@@ -120,7 +120,9 @@ trait AssetNameTrait
                         $this->slugify = new Slugify();
                     }
 
-                    $filename = $this->slugify->slugify($filename) . '.' . $asset->getFileExtension();
+                    $pathInfo = pathinfo($object->getFilename());
+                    $fileExtension = $pathInfo['extension'] ?? $asset->getFileExtension();
+                    $filename = $this->slugify->slugify($filename) . '.' . $fileExtension;
                 }
             }
         }

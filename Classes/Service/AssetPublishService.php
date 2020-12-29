@@ -50,25 +50,30 @@ class AssetPublishService
      */
     public function republishAsset(AssetInterface $asset): void
     {
-        $collection = $this->resourceManager->getCollection($asset->getResource()->getCollectionName());
-
-        /** @var VariantSupportInterface $originalAsset */
-        $originalAsset = ($asset instanceof AssetVariantInterface ? $asset->getOriginalAsset() : $asset);
-
-        $variants = [];
-        if ($originalAsset instanceof AssetVariantInterface) {
-            $variants = $originalAsset->getVariants();
+        if ($asset instanceof AssetVariantInterface) {
+            $asset = $asset->getOriginalAsset();
         }
 
-        /** @var QueryResult $thumbnails */
-        $thumbnails = $this->thumbnailRepository->findByOriginalAsset($originalAsset);
+        if (!$asset->isInUse()) {
+            return;
+        }
+
+        $collection = $this->resourceManager->getCollection($asset->getResource()->getCollectionName());
+
+        if (!$collection) {
+            return;
+        }
+
+        $variants = $asset instanceof VariantSupportInterface ? $asset->getVariants() : [];
+        $variants[] = $asset;
+
+        $thumbnails = array_merge(...array_map(function ($variant) {
+            /** @noinspection PhpUndefinedMethodInspection */
+            return $this->thumbnailRepository->findByOriginalAsset($variant)->toArray();
+        }, $variants));
 
         try {
             $collection->getTarget()->publishResource($asset->getResource(), $collection);
-
-            foreach ($variants as $variant) {
-                $collection->getTarget()->publishResource($variant->getResource(), $collection);
-            }
 
             /** @var Thumbnail $thumbnail */
             foreach ($thumbnails as $thumbnail) {

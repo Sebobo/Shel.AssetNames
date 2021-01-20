@@ -54,10 +54,6 @@ class AssetPublishService
             $asset = $asset->getOriginalAsset();
         }
 
-        if (!$asset->isInUse()) {
-            return;
-        }
-
         $collection = $this->resourceManager->getCollection($asset->getResource()->getCollectionName());
 
         if (!$collection) {

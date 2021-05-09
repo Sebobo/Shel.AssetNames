@@ -36,10 +36,11 @@ In my tests publishing ~1000 resources with this plugin took ~2.5s compared to ~
 You can customise the filename creation via your `Settings.yaml`.
 Add the following snippet to your configuration and adapt it to your needs:
 
-    Shel:
-      AssetNames:
-        expression: "${'my-prefix-' + asset.title + '-' + width + 'x' + height}"
-        
+```yaml
+Shel:
+ AssetNames:
+  expression: "${'my-prefix-' + asset.title + '-' + width + 'x' + height}"
+```       
 It's recommended to keep the `width` and `height` suffix.
 
 ## What the package cannot do yet

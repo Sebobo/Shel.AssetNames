@@ -14,7 +14,6 @@ namespace Shel\AssetNames\Service;
  */
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Persistence\Doctrine\QueryResult;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Flow\ResourceManagement\Target\Exception;
 use Neos\Media\Domain\Model\AssetInterface;
@@ -45,23 +44,23 @@ class AssetPublishService
     protected $thumbnailRepository;
 
     /**
-     * @param AssetInterface $asset
-     * @noinspection PhpUnused
+     * Publishes the resource and all variants thumbnails for an image when it was changed.
+     * This is necessary to make sure that all symlinks are updated
      */
     public function republishAsset(AssetInterface $asset): void
     {
-        if ($asset instanceof AssetVariantInterface) {
-            $asset = $asset->getOriginalAsset();
-        }
-
         $collection = $this->resourceManager->getCollection($asset->getResource()->getCollectionName());
 
         if (!$collection) {
             return;
         }
 
-        $variants = $asset instanceof VariantSupportInterface ? $asset->getVariants() : [];
-        $variants[] = $asset;
+        if ($asset instanceof AssetVariantInterface) {
+            $variants = [$asset];
+        } else {
+            $variants = $asset instanceof VariantSupportInterface ? $asset->getVariants() : [];
+            $variants[] = $asset;
+        }
 
         $thumbnails = array_merge(...array_map(function ($variant) {
             /** @noinspection PhpUndefinedMethodInspection */
@@ -78,5 +77,22 @@ class AssetPublishService
                 }
             }
         } catch(Exception $e) {}
+    }
+
+    /**
+     * Publishes a thumbnail.
+     * This is necessary as in certain conditions thumbnails with custom titles from this package
+     * are not properly symlinked after publishing.
+     */
+    public function publishThumbnail(Thumbnail $thumbnail): void
+    {
+        if (!$thumbnail->getResource()) {
+            return;
+        }
+        $collection = $this->resourceManager->getCollection($thumbnail->getResource()->getCollectionName());
+        if (!$collection) {
+            return;
+        }
+        $collection->getTarget()->publishResource($thumbnail->getResource(), $collection);
     }
 }

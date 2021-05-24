@@ -95,35 +95,33 @@ trait AssetNameTrait
             }
         }
 
-        if ($asset !== null) {
-            if (!empty($asset->getTitle())) {
-                try {
-                    if ($asset instanceof ImageInterface && (!$width || !$height)) {
-                        $width = $asset->getWidth();
-                        $height = $asset->getHeight();
-                    }
-
-                    $filename = \Neos\Eel\Utility::evaluateEelExpression(
-                        $this->assetNameExpression,
-                        $this->eelEvaluator,
-                        [
-                            'asset' => $asset,
-                            'width' => $width,
-                            'height' => $height,
-                        ],
-                        []
-                    );
-                } catch (Exception $e) {
-                    $filename = $asset->getTitle();
-                } finally {
-                    if (!$this->slugify) {
-                        $this->slugify = new Slugify();
-                    }
-
-                    $pathInfo = pathinfo($object->getFilename());
-                    $fileExtension = $pathInfo['extension'] ?? $asset->getFileExtension();
-                    $filename = $this->slugify->slugify($filename) . '.' . $fileExtension;
+        if (($asset !== null) && !empty($asset->getTitle())) {
+            try {
+                if ($asset instanceof ImageInterface && (!$width || !$height)) {
+                    $width = $asset->getWidth();
+                    $height = $asset->getHeight();
                 }
+
+                $filename = \Neos\Eel\Utility::evaluateEelExpression(
+                    $this->assetNameExpression,
+                    $this->eelEvaluator,
+                    [
+                        'asset' => $asset,
+                        'width' => $width,
+                        'height' => $height,
+                    ],
+                    []
+                );
+            } catch (Exception $e) {
+                $filename = $asset->getTitle();
+            } finally {
+                if (!$this->slugify) {
+                    $this->slugify = new Slugify();
+                }
+
+                $pathInfo = pathinfo($object->getFilename());
+                $fileExtension = $pathInfo['extension'] ?? $asset->getFileExtension();
+                $filename = $this->slugify->slugify($filename) . '.' . $fileExtension;
             }
         }
 

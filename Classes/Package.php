@@ -14,11 +14,9 @@ namespace Shel\AssetNames;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Package\Package as BasePackage;
 use Neos\Media\Domain\Service\AssetService;
+use Neos\Media\Domain\Service\ThumbnailService;
 use Shel\AssetNames\Service\AssetPublishService;
 
-/**
- * The Neos Package
- */
 class Package extends BasePackage
 {
     /**
@@ -32,6 +30,11 @@ class Package extends BasePackage
         $dispatcher->connect(
             AssetService::class, 'assetUpdated',
             AssetPublishService::class, 'republishAsset'
+            );
+
+        $dispatcher->connect(
+            ThumbnailService::class, 'thumbnailPersisted',
+            AssetPublishService::class, 'publishThumbnail'
             );
     }
 }
